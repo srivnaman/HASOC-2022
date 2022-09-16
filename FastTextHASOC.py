@@ -22,7 +22,15 @@ from tensorflow.keras.layers import Dense, Dropout, Embedding, Flatten, LSTM
 
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
-# import stemmer as hindi_stemmer
+import stemmer as hindi_stemmer
 import nltk
 
 nltk.download('stopwords')
+
+english_stopwords = stopwords.words("english")
+with open('final_stopwords.txt', encoding = 'utf-8') as f:
+    hindi_stopwords = f.readlines()
+    for i in range(len(hindi_stopwords)):
+        hindi_stopwords[i] = re.sub('\n','',hindi_stopwords[i])
+stopwords = english_stopwords + hindi_stopwords
+english_stemmer = SnowballStemmer("english")
