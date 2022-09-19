@@ -54,3 +54,59 @@ def clean_tweet(tweet):
             token = hindi_stemmer.hi_stem(token)   # Stemmer for Hindi text
             tokens.append(token)
     return " ".join(tokens)
+
+df = pd.read_csv("/content/germanTrain.csv")
+
+tweets = df.text
+y = df.label
+
+# y = y.replace(to_replace = ['HOF', 'NOT'], value = [1,0])
+
+
+
+def Pipeline(tweets):
+  #The function takes an array of strings (tweets) as input
+
+    
+# Applying the cleaning function to all the tweets 
+
+  cleaned_tweets = [clean_tweet(tweet) for tweet in tweets]
+
+  #Converting the cleaned text into a tokens using inbuilt function of Gensim. PS: please make sure to import gensim
+  PreText = [gensim.utils.simple_preprocess(i) for i in cleaned_tweets ]
+  
+  #Defining Word2Vec Embedding Model
+  embedModel = gensim.models.Word2Vec(
+    PreText,
+    window = 5,
+    min_count = 2
+    )
+  #Training the Embedding model
+  embedModel.train(PreText,total_examples=embedModel.corpus_count , epochs = embedModel.epochs)
+
+  #Creating FastText Embedding Model
+  FTTmodel = FastText(PreText,
+                      window=5,
+                      min_count=2)
+  
+  
+  #Creating an average of embedding for each sentence
+  def avg_word2vec(doc):
+    return np.mean([embedModel.wv[word] for word in doc if word in embedModel.wv.index_to_key], axis=0)
+  
+  X1 = []
+  for i in tqdm(range(len(PreText))):
+    X1.append(avg_word2vec(PreText[i]))
+  
+  X2 = []
+  def avg_FTTvec(doc):
+    return np.mean([FTTmodel.wv[word] for word in doc if word in FTTmodel.wv.index_to_key], axis=0)
+  
+  for i in tqdm(range(len(PreText))):
+    X2.append(avg_FTTvec(PreText[i]))
+  
+
+  X_FTT = np.array(X2)
+  X_w2v = np.array(X1)
+  
+  return X_w2v ,X_FTT  ,embedModel , FTTmodel
