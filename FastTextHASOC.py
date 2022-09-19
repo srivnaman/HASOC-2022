@@ -110,3 +110,39 @@ def Pipeline(tweets):
   X_w2v = np.array(X1)
   
   return X_w2v ,X_FTT  ,embedModel , FTTmodel
+
+
+X_w2v ,X_Ftv  , W2vModel , FttModel = Pipeline(tweets)
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X_Ftv,y, test_size=0.2, random_state=42)
+
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.ensemble import ExtraTreesClassifier
+from xgboost import XGBClassifier
+from sklearn.linear_model import RidgeClassifier
+from sklearn.linear_model import RidgeClassifierCV
+from sklearn import svm
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import NearestCentroid
+from lightgbm import LGBMClassifier
+from sklearn.svm import NuSVC
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.ensemble import VotingClassifier
+
+
+
+ext = ExtraTreesClassifier()
+nSvc = NuSVC()
+lda = LinearDiscriminantAnalysis()
+rcCV = RidgeClassifierCV()
+rc = RidgeClassifier(max_iter=1000)
+svc = svm.SVC(kernel='rbf')
+ccCV = CalibratedClassifierCV()
+xgb = XGBClassifier(max_depth = 15,n_estimators=200)
+lr = LogisticRegression(max_iter = 1500)
+nc = NearestCentroid()
+clf = RandomForestClassifier(n_estimators = 200,max_depth=10) 
+lgb = LGBMClassifier(max_depth = 25,n_estimators=200)
