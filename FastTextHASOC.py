@@ -146,3 +146,13 @@ lr = LogisticRegression(max_iter = 1500)
 nc = NearestCentroid()
 clf = RandomForestClassifier(n_estimators = 200,max_depth=10) 
 lgb = LGBMClassifier(max_depth = 25,n_estimators=200)
+
+
+Classifier=VotingClassifier(estimators=[('lda',lda),('xgb',xgb),('lgb',lgb),('rf',clf),('nSvc',nSvc)],voting='hard')
+Classifier.fit(X_train,y_train)
+y_pred = Classifier.predict(X_test)
+print(classification_report(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
+f1_score(y_test, y_pred)
+
+
